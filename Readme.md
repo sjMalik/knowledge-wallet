@@ -79,3 +79,13 @@ The `update` function in this code snippet is part of the Phaser 3 game framewor
 - The final section animates the bird by cycling through its frames. The `birdFrame` variable, which tracks the current frame, is incremented by `0.1` on each frame. If `birdFrame` exceeds the number of available frames (`birdFrames.length`), it is reset to `0`, ensuring the animation loops continuously. The `Math.floor` function is used to round `birdFrame` to the nearest integer, and the `setTexture` method updates the bird's texture to the corresponding frame from the `birdFrames` array. The speed of the animation can be adjusted by changing the increment value for `birdFrame`.
 
 In summary, this `update` function brings the game to life by creating a scrolling background, making the bird move up and down, and animating the bird's appearance. These dynamic behaviors enhance the visual appeal and interactivity of the game.
+
+```bash
+npm create vite@latest
+```
+
+This command initializes a new project using Vite, a fast and modern build tool for web applications. The @latest ensures that the most recent version of Vite is used. When you run this command, it will prompt you to provide details about your project, such as the project name, framework (e.g., React, Vue, or vanilla JavaScript), and other configuration options. Vite is known for its fast development server and optimized build process, making it a popular choice for modern web development.
+
+```bash
+npm install phaser
+```
