@@ -53,6 +53,7 @@
   - [✅ Real-World Analogy](#-real-world-analogy)
   - [💻 Code Example](#-code-example)
     - [📁 Using Buffer (Read whole file into memory)](#-using-buffer-read-whole-file-into-memory)
+    - [Using Stream (Read in chunks)](#using-stream-read-in-chunks)
 
 
 ## Preparation
@@ -649,5 +650,24 @@ fs.readFile('large.txt', (err, data) => {
   console.log('File size:', data.length); // data is a Buffer
   // Process the whole file at once
 });
+```
 
+👎 Disadvantage: Loads entire file into memory → bad for large files
 
+### Using Stream (Read in chunks)
+
+```js
+const fs = require('fs');
+
+const stream = fs.createReadStream('large.txt');
+
+stream.on('data', (chunk) => {
+  console.log('Received chunk:', chunk.length);
+  // Process each chunk
+});
+
+stream.on('end', () => {
+  console.log('Finished reading file.');
+});
+```
+👍 Advantage: Memory-efficient, great for large files
