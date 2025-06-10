@@ -1,20 +1,169 @@
 # Contents
 
 - [Contents](#contents)
+  - [ES6 introcued What major updates](#es6-introcued-what-major-updates)
+  - [What's the difference between var, let, and const?](#whats-the-difference-between-var-let-and-const)
+  - [let vs var Scope (Closure in Loops)](#let-vs-var-scope-closure-in-loops)
+  - [Why different behavior for var and let](#why-different-behavior-for-var-and-let)
+  - [What are arrow functions and how are they different from regular functions?](#what-are-arrow-functions-and-how-are-they-different-from-regular-functions)
+  - [Arrow Function this Binding](#arrow-function-this-binding)
+  - [Explain ES6 classes. How are they different from constructor functions?](#explain-es6-classes-how-are-they-different-from-constructor-functions)
+  - [Destructuring with Default Values](#destructuring-with-default-values)
   - [JavaScript (the language) itself is synchronous, but it supports asynchronous programming](#javascript-the-language-itself-is-synchronous-but-it-supports-asynchronous-programming)
   - [Node.js (JavaScript runtime) is asynchronous by nature, even though you write it in JavaScript](#nodejs-javascript-runtime-is-asynchronous-by-nature-even-though-you-write-it-in-javascript)
   - [Synchronous Built-in APIs (e.g., for file operations)](#synchronous-built-in-apis-eg-for-file-operations)
   - [Using async/await to make asynchronous code look synchronous](#using-asyncawait-to-make-asynchronous-code-look-synchronous)
-  - [let vs var Scope (Closure in Loops)](#let-vs-var-scope-closure-in-loops)
-  - [Why different behavior for var and let](#why-different-behavior-for-var-and-let)
-  - [Arrow Function this Binding](#arrow-function-this-binding)
-  - [Destructuring with Default Values](#destructuring-with-default-values)
   - [Promise Basics](#promise-basics)
   - [Missed Return](#missed-return)
   - [What is middleware in Node.js (Express)?](#what-is-middleware-in-nodejs-express)
   - [How would you create middleware that catches errors in Express?](#how-would-you-create-middleware-that-catches-errors-in-express)
   - [Why does Promise run before setTimeout even with 0 ms delay?](#why-does-promise-run-before-settimeout-even-with-0-ms-delay)
   - [Advantages of Promises over callbacks?](#advantages-of-promises-over-callbacks)
+
+---
+
+## ES6 introcued What major updates
+
+ES6 stands for ECMAScript 6, also known as ECMAScript 2015. It is the 6th edition of the ECMAScript language specification and a major update to JavaScript, officially released in June 2015 by ECMA International.
+
+| Feature                   | Description                                                                                   |
+|---------------------------|-----------------------------------------------------------------------------------------------|
+| `let` and `const`         | New ways to declare variables with block scope.                                               |
+| Arrow Functions           | Shorter syntax for functions: `() => {}`                                                      |
+| Template Literals         | Backtick strings for easy multi-line and embedded expressions: `` `Hello ${name}` ``          |
+| Destructuring             | Unpack arrays or objects into variables easily.                                               |
+| Default Parameters        | Functions can have default values for parameters.                                             |
+| Rest & Spread Operators   | Handle variable numbers of arguments and clone/merge arrays or objects.                       |
+| Classes                   | Syntactic sugar for prototypes to define object blueprints.                                   |
+| Modules                   | `import` and `export` for splitting code into multiple files.                                 |
+| Promises                  | Better way to handle asynchronous operations than callbacks.                                  |
+| Enhanced Object Literals  | Shorthand property and method definitions in objects.                                         |
+
+## What's the difference between var, let, and const?
+
+## let vs var Scope (Closure in Loops)
+
+```js
+function test() {
+    for (var i = 0; i < 3; i++) {
+        setTimeout(() => console.log(i), 100);
+    }
+
+    for (let j = 0; j < 3; j++) {
+        setTimeout(() => console.log(j), 100);
+    }
+}
+
+test();
+```
+
+**Output:**
+```
+3
+3
+3
+0
+1
+2
+```
+
+**Explanation:**
+
+- `var` is function-scoped, so all timeouts share the same `i`, which becomes 3 after the loop finishes.
+- `let` is block-scoped, so each `j` in the loop gets a new binding (closure), preserving its value.
+
+---
+
+## Why different behavior for var and let
+
+**A:**
+
+- `var` is hoisted and initialized with `undefined`.
+- `let` is hoisted but stays uninitialized until declaration (Temporal Dead Zone).
+
+**Q: What is Temporal Dead Zone?**  
+**A:** The time between entering scope and variable declaration where accessing the variable throws a ReferenceError.
+
+```js
+console.log(a);
+var a = 10;
+
+function test() {
+    console.log(b);
+    let b = 20;
+}
+test();
+```
+
+**Output:**
+```
+console.log(a)
+undefined (var hoisted)
+
+console.log(b);
+                            ^
+ReferenceError: Cannot access 'b' before initialization
+```
+
+---
+
+## What are arrow functions and how are they different from regular functions?
+
+Arrow functions:
+
+- Do not have their own this, arguments, or super.
+- Cannot be used as constructors.
+
+## Arrow Function this Binding
+
+Arrow functions don’t have their own `this`. They use `this` from the surrounding lexical scope, which here is the global object (no value property).  
+Arrow: lexical binding; Regular: dynamic based on call site.
+
+```js
+const obj = {
+    count: 10,
+    a: function () {
+        console.log(this.count);
+    },
+    b: () => {
+        console.log(this.count);
+    }
+};
+
+obj.a(); // ?
+obj.b();   // ?
+```
+
+**Output:**
+```
+10
+undefined
+```
+
+**Explanation:**
+
+- In regular function `a()`, `this` refers to `obj`, so `this.count = 10`.
+- Arrow functions do not have their own `this`, they inherit it from the lexical context (likely global or undefined).
+
+---
+
+## Explain ES6 classes. How are they different from constructor functions?
+
+## Destructuring with Default Values
+
+```js
+const { name = 'Anonymous', age } = { age: 30 };
+console.log(name, age);
+```
+
+**Output:**
+```
+Anonymous 30
+```
+
+**Explanation:**  
+Destructuring `{ age: 30 }` does not include a `name` key.  
+So `name` falls back to its default value: `'Anonymous'`.
 
 ---
 
@@ -87,123 +236,6 @@ readFile();
 ```
 
 This is still asynchronous under the hood, but appears sequential.
-
----
-
-## let vs var Scope (Closure in Loops)
-
-```js
-function test() {
-    for (var i = 0; i < 3; i++) {
-        setTimeout(() => console.log(i), 100);
-    }
-
-    for (let j = 0; j < 3; j++) {
-        setTimeout(() => console.log(j), 100);
-    }
-}
-
-test();
-```
-
-**Output:**
-```
-3
-3
-3
-0
-1
-2
-```
-
-**Explanation:**
-
-- `var` is function-scoped, so all timeouts share the same `i`, which becomes 3 after the loop finishes.
-- `let` is block-scoped, so each `j` in the loop gets a new binding (closure), preserving its value.
-
----
-
-## Why different behavior for var and let
-
-**A:**
-
-- `var` is hoisted and initialized with `undefined`.
-- `let` is hoisted but stays uninitialized until declaration (Temporal Dead Zone).
-
-**Q: What is Temporal Dead Zone?**  
-**A:** The time between entering scope and variable declaration where accessing the variable throws a ReferenceError.
-
-```js
-console.log(a);
-var a = 10;
-
-function test() {
-    console.log(b);
-    let b = 20;
-}
-test();
-```
-
-**Output:**
-```
-console.log(a)
-undefined (var hoisted)
-
-console.log(b);
-                            ^
-ReferenceError: Cannot access 'b' before initialization
-```
-
----
-
-## Arrow Function this Binding
-
-Arrow functions don’t have their own `this`. They use `this` from the surrounding lexical scope, which here is the global object (no value property).  
-Arrow: lexical binding; Regular: dynamic based on call site.
-
-```js
-const obj = {
-    count: 10,
-    a: function () {
-        console.log(this.count);
-    },
-    b: () => {
-        console.log(this.count);
-    }
-};
-
-obj.a(); // ?
-obj.b();   // ?
-```
-
-**Output:**
-```
-10
-undefined
-```
-
-**Explanation:**
-
-- In regular function `a()`, `this` refers to `obj`, so `this.count = 10`.
-- Arrow functions do not have their own `this`, they inherit it from the lexical context (likely global or undefined).
-
----
-
-## Destructuring with Default Values
-
-```js
-const { name = 'Anonymous', age } = { age: 30 };
-console.log(name, age);
-```
-
-**Output:**
-```
-Anonymous 30
-```
-
-**Explanation:**  
-Destructuring `{ age: 30 }` does not include a `name` key.  
-So `name` falls back to its default value: `'Anonymous'`.
 
 ---
 
